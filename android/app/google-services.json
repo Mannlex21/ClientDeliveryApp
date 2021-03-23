@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "150360586611",
+    "project_id": "deliveryapp-2b12b",
+    "storage_bucket": "deliveryapp-2b12b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150360586611:android:56cefb94d929a7344e2d06",
+        "android_client_info": {
+          "package_name": "com.mannlex21.delivery_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150360586611-5qu28sma9vot39kq5n97f208bum8ev1s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ90gxQQJdOc6Ws9NrvcunVyN0ivZ5Zig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150360586611-5qu28sma9vot39kq5n97f208bum8ev1s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
