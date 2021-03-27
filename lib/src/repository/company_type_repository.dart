@@ -1,4 +1,4 @@
-import 'package:client_delivery_app/src/model/CompanyType.dart';
+import 'package:client_delivery_app/src/model/companyType.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CompanyTypeRepository {

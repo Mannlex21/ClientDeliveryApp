@@ -1,17 +1,13 @@
-import 'package:client_delivery_app/src/bloc/company_type_bloc.dart';
-import 'package:client_delivery_app/src/model/CompanyType.dart';
-import 'package:client_delivery_app/src/repository/company_type_repository.dart';
+import 'package:client_delivery_app/src/bloc/registration/registration_bloc.dart';
+import 'package:client_delivery_app/src/bloc/registration/registration_event.dart';
+import 'package:client_delivery_app/src/bloc/registration/registration_state.dart';
+import 'package:client_delivery_app/src/model/companyType.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:client_delivery_app/src/bloc/company_type_state.dart';
-import 'package:client_delivery_app/src/bloc/company_type_event.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  final BuildContext context;
-
-  RegistrationScreen(this.context, {Key key}) : super(key: key);
+  RegistrationScreen({Key key}) : super(key: key);
 
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
@@ -49,28 +45,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   FocusNode emailFocus;
   FocusNode passwordFocus;
   FocusNode phoneNumberFocus;
-  final companyTypeBloc = new CompanyTypeBloc();
+  RegistrationBloc _registrationBloc;
   List<CompanyType> listCompanyType = [];
-  final CompanyTypeRepository _companyTypeRepository = CompanyTypeRepository();
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<CompanyTypeBloc>(
-      create: (context) => CompanyTypeBloc(companyTypeRepository: _companyTypeRepository)..add(CompanyTypeLoad()),
-      child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Theme.of(context).primaryColor,
-          ),
-          backgroundColor: const Color(0xFFF9F9F9),
-          elevation: 0,
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor,
         ),
-        body: Form(
-          key: _formKey,
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(right: 20, left: 20, bottom: 10, top: 20),
-              child: Column(
+        backgroundColor: const Color(0xFFF9F9F9),
+        elevation: 0,
+      ),
+      body: Form(
+        key: _formKey,
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(right: 20, left: 20, bottom: 10, top: 20),
+            child: BlocBuilder<RegistrationBloc, RegistrationState>(builder: (context, state) {
+              return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -190,12 +184,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     onSaved: (value) {
                       email = value;
                     },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Este campo es obligatorio";
-                      }
-
-                      return null;
+                    validator: (_) {
+                      return _.isEmpty
+                          ? 'Este campo es obligatorio'
+                          : !state.isEmailValid
+                              ? 'Correo invalido'
+                              : null;
                     },
                   ),
                   TextFormField(
@@ -242,49 +236,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     onSaved: (value) {
                       password = value;
                     },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Este campo es obligatorio";
-                      }
-
-                      return null;
+                    validator: (_) {
+                      return _.isEmpty
+                          ? 'Este campo es obligatorio'
+                          : !state.isPasswordValid
+                              ? 'Contraseña invalida'
+                              : null;
                     },
                   ),
                   SizedBox(
                     height: 5,
                   ),
-                  Container(
-                    child: BlocBuilder<CompanyTypeBloc, CompanyTypeState>(builder: (context, state) {
-                      if (state is CompanyTypeLoading) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      if (state is CompanyTypeNoLoaded) {
-                        return Center(
-                          child: Column(
-                            children: <Widget>[Icon(Icons.error), Text('Cannot load posts')],
-                          ),
-                        );
-                      }
-                      if (state is CompanyTypeLoaded) {
-                        listCompanyType = state.companyTypeList;
-                        if (listCompanyType.length > 0) {
-                          return Container(
-                            height: 50,
-                            child: dropDown(listCompanyType),
-                          );
-                        } else {
-                          return Container(
-                            child: Center(
-                              child: Text('No Blog Avaliable'),
-                            ),
-                          );
-                        }
-                      }
-                      return Container();
-                    }),
-                  ),
+                  Container(child: dropDown(state)),
                   SizedBox(
                     height: 20,
                   ),
@@ -295,7 +258,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         Text('Registrar'),
                       ],
                     ),
-                    onPressed: () => _registration(context),
+                    onPressed: () => signUp(),
                     style: ButtonStyle(
                       textStyle: MaterialStateProperty.all(
                         TextStyle(
@@ -310,39 +273,69 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     height: 5,
                   ),
                 ],
-              ),
-            ),
+              );
+            }),
           ),
         ),
       ),
     );
   }
 
-  Widget dropDown(List<CompanyType> list) {
-    return DropdownButton<String>(
-      value: companyType.isEmpty ? null : companyType,
-      hint: new Text(
-        "Tipo de empresa",
-        style: TextStyle(color: Colors.grey[700]),
-      ),
-      underline: Container(
-        height: 1.4,
-        color: Colors.grey[400],
-      ),
-      isExpanded: true,
-      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-      items: list.map((CompanyType value) {
-        return new DropdownMenuItem<String>(
-          value: value.id,
-          child: new Text(value.name),
+  Widget dropDown(state) {
+    if (state is CompanyTypeLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (state is CompanyTypeNoLoaded) {
+      return Center(
+        child: Column(
+          children: <Widget>[Icon(Icons.error), Text('Cannot load posts')],
+        ),
+      );
+    }
+
+    if (state is CompanyTypeLoaded) {
+      listCompanyType = state.companyTypeList;
+
+      if (listCompanyType.length > 0) {
+        return Container(
+          height: 50,
+          child: DropdownButton<String>(
+            value: companyType.isEmpty ? null : companyType,
+            hint: new Text(
+              "Tipo de empresa",
+              style: TextStyle(color: Colors.grey[700]),
+            ),
+            underline: Container(
+              height: 1.4,
+              color: Colors.grey[400],
+            ),
+            isExpanded: true,
+            style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+            items: listCompanyType.map((CompanyType value) {
+              return new DropdownMenuItem<String>(
+                value: value.id,
+                child: new Text(value.name),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                companyType = listCompanyType.isEmpty ? value : listCompanyType.firstWhere((item) => item.id == value).id;
+              });
+            },
+          ),
         );
-      }).toList(),
-      onChanged: (value) {
-        setState(() {
-          companyType = listCompanyType.isEmpty ? value : listCompanyType.firstWhere((item) => item.id == value).id;
-        });
-      },
-    );
+      } else {
+        return Container(
+          child: Center(
+            child: Text('No Blog Avaliable'),
+          ),
+        );
+      }
+    }
+    return Container();
   }
 
   @override
@@ -356,7 +349,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     this._nameController.dispose();
     this._lastNameController.dispose();
     this._phoneNumberController.dispose();
-    companyTypeBloc.close();
+    _registrationBloc.close();
 
     emailFocus.dispose();
     passwordFocus.dispose();
@@ -380,58 +373,44 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     lastNameFocus = FocusNode();
     phoneNumberFocus = FocusNode();
     companyType = '';
+    _emailController.addListener(_onEmailChange);
+    _passwordController.addListener(_onPasswordChange);
+
+    _registrationBloc = BlocProvider.of<RegistrationBloc>(context);
   }
 
   void requestFocus(BuildContext context, FocusNode focusNode) {
     FocusScope.of(context).requestFocus(focusNode);
   }
 
-  Future<void> _registration(BuildContext context) async {
-    try {
-      if (_formKey.currentState.validate()) {
-        setState(() {
-          errorMessage = "";
-        });
+  void _onEmailChange() {
+    _registrationBloc.add(RegisterEmailChanged(email: _emailController.text));
+  }
 
-        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
+  void _onPasswordChange() {
+    _registrationBloc.add(RegisterPasswordChanged(password: _emailController.text));
+  }
 
-        if (userCredential != null) {
-          Navigator.of(context).pushNamed('/login');
-        }
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
+  void signUp() async {
+    if (_formKey.currentState.validate()) {
+      setState(() {
+        errorMessage = "";
+      });
+
+      _registrationBloc.add(
+        AddRegistration(
+          _companyController.text,
+          _companyAddressController.text,
+          _floorOfficeController.text,
+          _nameController.text,
+          _lastNameController.text,
+          _emailController.text,
+          _passwordController.text,
+          _phoneNumberController.text,
+          companyType,
+          "",
+        ),
+      );
     }
-    // if (!_loading) {
-    //   if (_formKey.currentState.validate()) {
-    //     _formKey.currentState.save();
-    //     setState(() {
-    //       _loading = true;
-    //       errorMessage = "";
-    //     });
-
-    //     User user = await widget.serverController.login(username, password);
-    //     if (user != null) {
-    //       setState(() {
-    //         _loading = false;
-    //       });
-    //       Navigator.of(context).pushReplacementNamed('/home', arguments: user); // con el pushReplacementNamed no apareceria el boton de retroceso
-    //     } else {
-    //       setState(() {
-    //         _loading = false;
-    //         errorMessage = "Usuario o contraseña incorrecto";
-    //       });
-    //     }
-    //   }
-    // }
   }
 }

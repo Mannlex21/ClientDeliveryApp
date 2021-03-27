@@ -1,10 +1,18 @@
+import 'package:client_delivery_app/src/bloc/registration/registration_bloc.dart';
+import 'package:client_delivery_app/src/bloc/registration/registration_event.dart';
+import 'package:client_delivery_app/src/repository/company_type_repository.dart';
+import 'package:client_delivery_app/src/repository/registration_repository.dart';
 import 'package:client_delivery_app/src/screen/home/home_screen.dart';
 import 'package:client_delivery_app/src/screen/login/login_screen.dart';
 import 'package:client_delivery_app/src/screen/registration/registration_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyApp extends StatelessWidget {
+  final CompanyTypeRepository _companyTypeRepository = CompanyTypeRepository();
+  final RegistrationRepository _registrationRepository = RegistrationRepository();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,13 +42,11 @@ class MyApp extends StatelessWidget {
             case '/home':
               return MyHomeScreen();
             case '/registration':
-              return RegistrationScreen(context);
-            //case '/search':
-            //   return SearchScreen(context, true);
-            // case '/productDetail':
-            //   return StoreScreen(item: settings.arguments);
-            // case '/addToCart':
-            //   return AddToCartScreen(item: settings.arguments);
+              return BlocProvider(
+                create: (context) => RegistrationBloc(companyTypeRepository: _companyTypeRepository, registrationRepository: _registrationRepository)
+                  ..add(CompanyTypeLoad()),
+                child: RegistrationScreen(),
+              );
             default:
               return LoginScreen(context);
           }
