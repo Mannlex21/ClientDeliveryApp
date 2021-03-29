@@ -21,10 +21,10 @@ class RegistrationLoading extends RegistrationState {
   String toString() => 'Loading';
 }
 
-class RegistrationLoaded extends RegistrationState {
+class RegistrationSuccess extends RegistrationState {
   final List<CompanyType> companyTypeList;
 
-  const RegistrationLoaded([this.companyTypeList]);
+  const RegistrationSuccess([this.companyTypeList]);
 
   @override
   List<Object> get props => [companyTypeList];
@@ -33,7 +33,14 @@ class RegistrationLoaded extends RegistrationState {
   String toString() => 'Loaded';
 }
 
-class RegistrationNoLoaded extends RegistrationState {
+class RegistrationFailed extends RegistrationState {
+  final String message;
+
+  const RegistrationFailed([this.message]);
+
+  @override
+  List<Object> get props => [message];
+
   @override
   String toString() => 'No loaded';
 }

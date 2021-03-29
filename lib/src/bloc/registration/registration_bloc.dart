@@ -31,7 +31,17 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   }
 
   Stream<RegistrationState> _mapAddCompanyToState(AddRegistration event) async* {
-    await _registrationRepository.post(event);
+    yield RegistrationLoading();
+    try {
+      final response = await _registrationRepository.post(event);
+      if (response.isSuccess) {
+        yield RegistrationSuccess();
+      } else {
+        yield RegistrationFailed(response.message);
+      }
+    } catch (e) {
+      yield RegistrationFailed();
+    }
   }
 
   bool _mapEmailChangeToState(String email) {

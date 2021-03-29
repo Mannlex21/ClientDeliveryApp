@@ -1,4 +1,5 @@
 import 'package:client_delivery_app/src/components/home/drawer_widget.dart';
+import 'package:client_delivery_app/src/components/home/home_wiget.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +23,8 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   @override
   Widget build(BuildContext context) {
     List _widgetOptions = [
-      // HomeWidget(),
+      HomeWidget(),
       // SearchScreen(context, false),
-      Text(
-        'Index 2: School',
-      ),
       Text(
         'Index 2: School',
       ),

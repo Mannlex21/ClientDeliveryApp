@@ -1,6 +1,8 @@
+import 'package:client_delivery_app/src/bloc/login/login_bloc.dart';
 import 'package:client_delivery_app/src/bloc/registration/registration_bloc.dart';
 import 'package:client_delivery_app/src/bloc/registration/registration_event.dart';
 import 'package:client_delivery_app/src/repository/company_type_repository.dart';
+import 'package:client_delivery_app/src/repository/login_repository.dart';
 import 'package:client_delivery_app/src/repository/registration_repository.dart';
 import 'package:client_delivery_app/src/screen/home/home_screen.dart';
 import 'package:client_delivery_app/src/screen/login/login_screen.dart';
@@ -12,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class MyApp extends StatelessWidget {
   final CompanyTypeRepository _companyTypeRepository = CompanyTypeRepository();
   final RegistrationRepository _registrationRepository = RegistrationRepository();
+  final LoginRepository _loginRepository = LoginRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,10 @@ class MyApp extends StatelessWidget {
         return MaterialPageRoute(builder: (BuildContext context) {
           switch (settings.name) {
             case '/':
-              return LoginScreen(context);
+              return BlocProvider(
+                create: (context) => LoginBloc(loginRepository: _loginRepository),
+                child: LoginScreen(),
+              );
             case '/home':
               return MyHomeScreen();
             case '/registration':
@@ -48,7 +54,10 @@ class MyApp extends StatelessWidget {
                 child: RegistrationScreen(),
               );
             default:
-              return LoginScreen(context);
+              return BlocProvider(
+                create: (context) => LoginBloc(loginRepository: _loginRepository),
+                child: LoginScreen(),
+              );
           }
         });
       },

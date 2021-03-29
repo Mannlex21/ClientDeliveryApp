@@ -50,231 +50,261 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Theme.of(context).primaryColor,
+    return BlocListener<RegistrationBloc, RegistrationState>(
+      listener: (context, state) {
+        if (state is RegistrationFailed) {
+          setState(() {
+            errorMessage = state.message;
+          });
+        }
+
+        if (state is RegistrationSuccess) {
+          // Future.delayed(Duration.zero, () {
+          //   Navigator.of(context).pushReplacementNamed('/home');
+          // });
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: Theme.of(context).primaryColor,
+          ),
+          backgroundColor: const Color(0xFFF9F9F9),
+          elevation: 0,
         ),
-        backgroundColor: const Color(0xFFF9F9F9),
-        elevation: 0,
-      ),
-      body: Form(
-        key: _formKey,
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(right: 20, left: 20, bottom: 10, top: 20),
-            child: BlocBuilder<RegistrationBloc, RegistrationState>(builder: (context, state) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Registration",
-                    style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: "Nombre del negocio:"),
-                    controller: _companyController,
-                    focusNode: companyFocus,
-                    keyboardType: TextInputType.name,
-                    onEditingComplete: () => requestFocus(context, passwordFocus),
-                    textInputAction: TextInputAction.next,
-                    onSaved: (value) {
-                      company = value;
-                    },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Este campo es obligatorio";
-                      }
-
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: "Dirección del negocio:"),
-                    controller: _companyAddressController,
-                    focusNode: companyAddressFocus,
-                    keyboardType: TextInputType.streetAddress,
-                    onEditingComplete: () => requestFocus(context, passwordFocus),
-                    textInputAction: TextInputAction.next,
-                    onSaved: (value) {
-                      companyAddress = value;
-                    },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Este campo es obligatorio";
-                      }
-
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: "Piso/Oficina (opcional):"),
-                    controller: _floorOfficeController,
-                    focusNode: floorOfficeFocus,
-                    keyboardType: TextInputType.streetAddress,
-                    onEditingComplete: () => requestFocus(context, passwordFocus),
-                    textInputAction: TextInputAction.next,
-                    onSaved: (value) {
-                      floorOffice = value;
-                    },
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: TextFormField(
-                            decoration: InputDecoration(labelText: "Nombre:"),
-                            controller: _nameController,
-                            focusNode: nameFocus,
-                            keyboardType: TextInputType.name,
-                            onEditingComplete: () => requestFocus(context, passwordFocus),
-                            textInputAction: TextInputAction.next,
-                            onSaved: (value) {
-                              name = value;
-                            },
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return "Este campo es obligatorio";
-                              }
-
-                              return null;
-                            },
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: TextFormField(
-                            decoration: InputDecoration(labelText: "Apellido:"),
-                            controller: _lastNameController,
-                            focusNode: lastNameFocus,
-                            keyboardType: TextInputType.name,
-                            onEditingComplete: () => requestFocus(context, passwordFocus),
-                            textInputAction: TextInputAction.next,
-                            onSaved: (value) {
-                              lastName = value;
-                            },
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return "Este campo es obligatorio";
-                              }
-
-                              return null;
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: "Email:"),
-                    controller: _emailController,
-                    focusNode: emailFocus,
-                    keyboardType: TextInputType.emailAddress,
-                    onEditingComplete: () => requestFocus(context, passwordFocus),
-                    textInputAction: TextInputAction.next,
-                    onSaved: (value) {
-                      email = value;
-                    },
-                    validator: (_) {
-                      return _.isEmpty
-                          ? 'Este campo es obligatorio'
-                          : !state.isEmailValid
-                              ? 'Correo invalido'
-                              : null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Número de teléfono móvil:",
-                    ),
-                    style: TextStyle(fontSize: 16),
-                    controller: _phoneNumberController,
-                    focusNode: phoneNumberFocus,
-                    keyboardType: TextInputType.emailAddress,
-                    onEditingComplete: () => requestFocus(context, passwordFocus),
-                    textInputAction: TextInputAction.next,
-                    onSaved: (value) {
-                      phoneNumber = value;
-                    },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Este campo es obligatorio";
-                      }
-
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Contraseña:",
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(showPassword ? Icons.visibility : Icons.visibility_off),
-                        onPressed: () {
-                          setState(() {
-                            showPassword = !showPassword;
-                          });
-                        },
+        body: Form(
+          key: _formKey,
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(right: 20, left: 20, bottom: 10, top: 20),
+              child: BlocBuilder<RegistrationBloc, RegistrationState>(builder: (context, state) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Registration",
+                      style: TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    style: TextStyle(fontSize: 16),
-                    obscureText: !showPassword,
-                    controller: _passwordController,
-                    focusNode: passwordFocus,
-                    // onEditingComplete: () => _login(context),
-                    onSaved: (value) {
-                      password = value;
-                    },
-                    validator: (_) {
-                      return _.isEmpty
-                          ? 'Este campo es obligatorio'
-                          : !state.isPasswordValid
-                              ? 'Contraseña invalida'
-                              : null;
-                    },
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(child: dropDown(state)),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Nombre del negocio:"),
+                      controller: _companyController,
+                      focusNode: companyFocus,
+                      keyboardType: TextInputType.name,
+                      onEditingComplete: () => requestFocus(context, passwordFocus),
+                      textInputAction: TextInputAction.next,
+                      onSaved: (value) {
+                        company = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Este campo es obligatorio";
+                        }
+
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Dirección del negocio:"),
+                      controller: _companyAddressController,
+                      focusNode: companyAddressFocus,
+                      keyboardType: TextInputType.streetAddress,
+                      onEditingComplete: () => requestFocus(context, passwordFocus),
+                      textInputAction: TextInputAction.next,
+                      onSaved: (value) {
+                        companyAddress = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Este campo es obligatorio";
+                        }
+
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Piso/Oficina (opcional):"),
+                      controller: _floorOfficeController,
+                      focusNode: floorOfficeFocus,
+                      keyboardType: TextInputType.streetAddress,
+                      onEditingComplete: () => requestFocus(context, passwordFocus),
+                      textInputAction: TextInputAction.next,
+                      onSaved: (value) {
+                        floorOffice = value;
+                      },
+                    ),
+                    Row(
                       children: [
-                        Text('Registrar'),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: TextFormField(
+                              decoration: InputDecoration(labelText: "Nombre:"),
+                              controller: _nameController,
+                              focusNode: nameFocus,
+                              keyboardType: TextInputType.name,
+                              onEditingComplete: () => requestFocus(context, passwordFocus),
+                              textInputAction: TextInputAction.next,
+                              onSaved: (value) {
+                                name = value;
+                              },
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return "Este campo es obligatorio";
+                                }
+
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: TextFormField(
+                              decoration: InputDecoration(labelText: "Apellido:"),
+                              controller: _lastNameController,
+                              focusNode: lastNameFocus,
+                              keyboardType: TextInputType.name,
+                              onEditingComplete: () => requestFocus(context, passwordFocus),
+                              textInputAction: TextInputAction.next,
+                              onSaved: (value) {
+                                lastName = value;
+                              },
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return "Este campo es obligatorio";
+                                }
+
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                    onPressed: () => signUp(),
-                    style: ButtonStyle(
-                      textStyle: MaterialStateProperty.all(
-                        TextStyle(
-                          color: Colors.white,
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Email:"),
+                      controller: _emailController,
+                      focusNode: emailFocus,
+                      keyboardType: TextInputType.emailAddress,
+                      onEditingComplete: () => requestFocus(context, passwordFocus),
+                      textInputAction: TextInputAction.next,
+                      onSaved: (value) {
+                        email = value;
+                      },
+                      validator: (_) {
+                        return _.isEmpty
+                            ? 'Este campo es obligatorio'
+                            : !state.isEmailValid
+                                ? 'Correo invalido'
+                                : null;
+                      },
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Número de teléfono móvil:",
+                      ),
+                      style: TextStyle(fontSize: 16),
+                      controller: _phoneNumberController,
+                      focusNode: phoneNumberFocus,
+                      keyboardType: TextInputType.emailAddress,
+                      onEditingComplete: () => requestFocus(context, passwordFocus),
+                      textInputAction: TextInputAction.next,
+                      onSaved: (value) {
+                        phoneNumber = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Este campo es obligatorio";
+                        }
+
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Contraseña:",
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(showPassword ? Icons.visibility : Icons.visibility_off),
+                          onPressed: () {
+                            setState(() {
+                              showPassword = !showPassword;
+                            });
+                          },
                         ),
                       ),
-                      backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                      padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15)),
+                      style: TextStyle(fontSize: 16),
+                      obscureText: !showPassword,
+                      controller: _passwordController,
+                      focusNode: passwordFocus,
+                      // onEditingComplete: () => _login(context),
+                      onSaved: (value) {
+                        password = value;
+                      },
+                      validator: (_) {
+                        return _.isEmpty
+                            ? 'Este campo es obligatorio'
+                            : !state.isPasswordValid
+                                ? 'Contraseña invalida'
+                                : null;
+                      },
                     ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                ],
-              );
-            }),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Container(child: dropDown(state)),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    if (errorMessage.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0),
+                        child: Text(
+                          errorMessage,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    ElevatedButton(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Registrar'),
+                        ],
+                      ),
+                      onPressed: () => signUp(),
+                      style: ButtonStyle(
+                        textStyle: MaterialStateProperty.all(
+                          TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
+                        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15)),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                  ],
+                );
+              }),
+            ),
           ),
         ),
       ),
