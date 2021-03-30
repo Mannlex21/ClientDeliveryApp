@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -104,21 +102,26 @@ class _HomeWidgetState extends State<HomeWidget> {
       color: Colors.white,
       height: 119,
       child: ListView(
-        children: [action()],
+        children: [
+          action(() {
+            Navigator.of(context).pushNamed('/modifier');
+          }, 'Modificadores'),
+          action(() {}, 'Menu'),
+        ],
       ),
     );
   }
 
-  Widget action() {
+  Widget action(functionPress, String text) {
     return Container(
       child: ElevatedButton(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Modificadores'),
+            Text(text),
           ],
         ),
-        onPressed: () => {},
+        onPressed: functionPress,
         style: ButtonStyle(
           textStyle: MaterialStateProperty.all(
             TextStyle(
