@@ -1,5 +1,6 @@
 import 'package:client_delivery_app/src/bloc/login/login_bloc.dart';
 import 'package:client_delivery_app/src/bloc/modifier/modifier_bloc.dart';
+import 'package:client_delivery_app/src/bloc/modifier/modifier_event.dart';
 import 'package:client_delivery_app/src/bloc/registration/registration_bloc.dart';
 import 'package:client_delivery_app/src/bloc/registration/registration_event.dart';
 import 'package:client_delivery_app/src/repository/company_type_repository.dart';
@@ -53,7 +54,10 @@ class MyApp extends StatelessWidget {
             case '/home':
               return MyHomeScreen();
             case '/modifier':
-              return ModifierScreen(context);
+              return BlocProvider(
+                create: (context) => ModifierBloc(modifierRepository: _modifierRepository)..add(ListModifier()),
+                child: ModifierScreen(context),
+              );
             case '/add_modifier':
               return BlocProvider(
                 create: (context) => ModifierBloc(modifierRepository: _modifierRepository),

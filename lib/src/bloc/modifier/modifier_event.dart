@@ -22,3 +22,8 @@ class AddModifier extends ModifierEvent {
   @override
   String toString() => 'Adding modifier';
 }
+
+class ListModifier extends ModifierEvent {
+  @override
+  String toString() => 'Adding modifier';
+}

@@ -48,7 +48,7 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
                   padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
                 ),
                 onPressed: () {
-                  _modifierBloc.add(AddModifier(Modifier(_titleController.text, modifierList)));
+                  _modifierBloc.add(AddModifier(Modifier(_titleController.text, modifierList, null)));
                 },
                 child: Center(
                   child: Text('Guardar modificador'),
@@ -275,7 +275,7 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
       barrierDismissible: false,
     ).then((value) {
       if (value != null) {
-        modifierList.add(ItemModifier(value['name'], double.parse(value['price'])));
+        modifierList.add(ItemModifier(value['name'], double.parse(value['price']), null));
       }
     });
   }

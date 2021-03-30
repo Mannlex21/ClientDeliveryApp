@@ -1,17 +1,12 @@
+import 'package:client_delivery_app/src/model/modifier.dart';
 import 'package:equatable/equatable.dart';
 
 class ModifierState extends Equatable {
-  final List modifierList;
-  ModifierState({this.modifierList});
-
-  ModifierState modifyList({String name, String price}) {
-    modifierList.add({'name': name, 'price': price});
-
-    return ModifierState(modifierList: modifierList ?? this.modifierList);
-  }
+  final List listModifier;
+  ModifierState({this.listModifier});
 
   @override
-  List<Object> get props => (modifierList);
+  List<Object> get props => (listModifier);
 }
 
 class ModifierLoading extends ModifierState {
@@ -24,10 +19,39 @@ class ModifierSuccess extends ModifierState {
   String toString() => 'Loaded';
 }
 
-class RegistrationFailed extends ModifierState {
+class ModifierFailed extends ModifierState {
   final String message;
 
-  RegistrationFailed([this.message]);
+  ModifierFailed([this.message]);
+
+  @override
+  List<Object> get props => [message];
+
+  @override
+  String toString() => 'No loaded';
+}
+
+class ListModifierLoading extends ModifierState {
+  @override
+  String toString() => 'Loading';
+}
+
+class ListModifierSuccess extends ModifierState {
+  final List<Modifier> listModifier;
+
+  ListModifierSuccess([this.listModifier]);
+
+  @override
+  List<Object> get props => [listModifier];
+
+  @override
+  String toString() => 'Loaded';
+}
+
+class ListModifierFailed extends ModifierState {
+  final String message;
+
+  ListModifierFailed([this.message]);
 
   @override
   List<Object> get props => [message];
