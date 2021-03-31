@@ -28,7 +28,8 @@ class _ModifierScreenState extends State<ModifierScreen> {
           });
         }
       },
-      child: BlocBuilder<ModifierBloc, ModifierState>(builder: (context, state) {
+      child:
+          BlocBuilder<ModifierBloc, ModifierState>(builder: (context, state) {
         return Scaffold(
           floatingActionButton: FloatingActionButton(
             backgroundColor: const Color(0xff03dac6),
@@ -39,7 +40,8 @@ class _ModifierScreenState extends State<ModifierScreen> {
             child: Icon(Icons.add),
           ),
           body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
                   leading: IconButton(
@@ -80,6 +82,7 @@ class _ModifierScreenState extends State<ModifierScreen> {
   @override
   void dispose() {
     super.dispose();
+    _modifierBloc.close();
   }
 
   @override

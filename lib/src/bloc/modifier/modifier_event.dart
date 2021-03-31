@@ -1,8 +1,7 @@
 import 'package:client_delivery_app/src/model/modifier.dart';
-import 'package:meta/meta.dart';
+import 'package:equatable/equatable.dart';
 
-@immutable
-abstract class ModifierEvent {
+abstract class ModifierEvent extends Equatable {
   const ModifierEvent();
 
   @override

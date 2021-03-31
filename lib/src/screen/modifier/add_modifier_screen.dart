@@ -21,8 +21,12 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final _titleController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
 
   String title = "";
+  String name = '';
+  String price = '';
   bool isOptional = false;
 
   FocusNode titleFocus;
@@ -36,7 +40,8 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
           Navigator.of(context).pop(false);
         }
       },
-      child: BlocBuilder<ModifierBloc, ModifierState>(builder: (context, state) {
+      child:
+          BlocBuilder<ModifierBloc, ModifierState>(builder: (context, state) {
         return Scaffold(
           bottomNavigationBar: Container(
             height: 70,
@@ -44,11 +49,14 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                  padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
+                  backgroundColor:
+                      MaterialStateProperty.all(Theme.of(context).primaryColor),
+                  padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
                 ),
                 onPressed: () {
-                  _modifierBloc.add(AddModifier(Modifier(_titleController.text, modifierList, null)));
+                  _modifierBloc.add(AddModifier(
+                      Modifier(_titleController.text, modifierList, null)));
                 },
                 child: Center(
                   child: Text('Guardar modificador'),
@@ -57,7 +65,8 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
             ),
           ),
           body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
                   leading: IconButton(
@@ -88,7 +97,8 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
               child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(right: 20, left: 20, bottom: 10, top: 0),
+                  padding: const EdgeInsets.only(
+                      right: 20, left: 20, bottom: 10, top: 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -119,7 +129,8 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
                         },
                       ),
                       CheckboxListTile(
-                        title: Text("Se requiere que los clientes elijan modificadores"),
+                        title: Text(
+                            "Se requiere que los clientes elijan modificadores"),
                         value: isOptional,
                         onChanged: (newValue) {
                           setState(() {
@@ -129,7 +140,8 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
                         controlAffinity: ListTileControlAffinity.leading,
                       ),
                       CheckboxListTile(
-                        title: Text("Establecer número total de modificadores que los clientes pueden elegir"),
+                        title: Text(
+                            "Establecer número total de modificadores que los clientes pueden elegir"),
                         value: isOptional,
                         onChanged: (newValue) {
                           setState(() {
@@ -139,19 +151,24 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
                         controlAffinity: ListTileControlAffinity.leading,
                       ),
                       CheckboxListTile(
-                        title: Text("Establecer número total de modificadores que los clientes pueden elegir"),
+                        title: Text(
+                            "Establecer número total de modificadores que los clientes pueden elegir"),
                         value: isOptional,
                         onChanged: (newValue) {
                           setState(() {
                             isOptional = newValue;
                           });
                         },
-                        controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+                        controlAffinity: ListTileControlAffinity
+                            .leading, //  <-- leading Checkbox
                       ),
-                      ElevatedButton(onPressed: () => openDialog(context), child: Text("Agregar modificador")),
+                      ElevatedButton(
+                          onPressed: () => openDialog(context),
+                          child: Text("Agregar modificador")),
                       Column(
                         children: [
-                          for (ItemModifier item in modifierList) itemModifier(context, item),
+                          for (ItemModifier item in modifierList)
+                            itemModifier(context, item),
                         ],
                       )
                     ],
@@ -195,10 +212,7 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
 
   openDialog(BuildContext context) {
     GlobalKey<FormState> _formDialogKey = GlobalKey<FormState>();
-    String name = '';
-    String price = '';
-    TextEditingController _nameController = TextEditingController();
-    TextEditingController _priceController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -265,7 +279,10 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
               child: Text("Agregar"),
               onPressed: () {
                 if (_formDialogKey.currentState.validate()) {
-                  Navigator.pop(context, {'name': _nameController.text, 'price': _priceController.text});
+                  Navigator.pop(context, {
+                    'name': _nameController.text,
+                    'price': _priceController.text
+                  });
                 }
               },
             ),
@@ -275,7 +292,8 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
       barrierDismissible: false,
     ).then((value) {
       if (value != null) {
-        modifierList.add(ItemModifier(value['name'], double.parse(value['price']), null));
+        modifierList.add(
+            ItemModifier(value['name'], double.parse(value['price']), null));
       }
     });
   }
@@ -283,6 +301,9 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
   @override
   void dispose() {
     super.dispose();
+    this._nameController.dispose();
+    this._priceController.dispose();
+
     _modifierBloc.close();
   }
 

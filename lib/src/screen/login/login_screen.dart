@@ -2,7 +2,6 @@ import 'package:client_delivery_app/src/bloc/login/login_bloc.dart';
 import 'package:client_delivery_app/src/bloc/login/login_event.dart';
 import 'package:client_delivery_app/src/bloc/login/login_state.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -51,7 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 35, left: 35, bottom: 10, top: 20),
+                  padding: const EdgeInsets.only(
+                      right: 35, left: 35, bottom: 10, top: 20),
                   child: Center(
                     child: Column(
                       children: [
@@ -67,10 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               TextFormField(
-                                decoration: InputDecoration(labelText: "Correo"),
+                                decoration:
+                                    InputDecoration(labelText: "Correo"),
                                 controller: _emailController,
                                 focusNode: emailFocus,
-                                onEditingComplete: () => requestFocus(context, passwordFocus),
+                                onEditingComplete: () =>
+                                    requestFocus(context, passwordFocus),
                                 textInputAction: TextInputAction.next,
                                 onSaved: (value) {
                                   email = value;
@@ -90,7 +92,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 decoration: InputDecoration(
                                   labelText: "Contraseña",
                                   suffixIcon: IconButton(
-                                    icon: Icon(showPassword ? Icons.visibility : Icons.visibility_off),
+                                    icon: Icon(showPassword
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
                                     onPressed: () {
                                       setState(() {
                                         showPassword = !showPassword;
@@ -145,8 +149,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                                  padding: MaterialStateProperty.all(EdgeInsets.all(15)),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Theme.of(context).primaryColor),
+                                  padding: MaterialStateProperty.all(
+                                      EdgeInsets.all(15)),
                                 ),
                               ),
                               SizedBox(
@@ -190,7 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
     this._emailController.dispose();
     this._passwordController.dispose();
 
-    emailFocus.dispose(); // NOTA: siempre borrar variables en dispose para liberar memoria
+    emailFocus
+        .dispose(); // NOTA: siempre borrar variables en dispose para liberar memoria
     passwordFocus.dispose();
   }
 
