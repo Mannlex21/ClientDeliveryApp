@@ -1,3 +1,4 @@
+import 'package:client_delivery_app/src/components/home/action_menu_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -37,7 +38,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 child: Icon(Icons.search),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(
                                   "Buscar",
                                   style: TextStyle(fontSize: 22),
@@ -103,34 +105,13 @@ class _HomeWidgetState extends State<HomeWidget> {
       height: 119,
       child: ListView(
         children: [
-          action(() {
-            Navigator.of(context).pushNamed('/modifier');
-          }, 'Modificadores'),
-          action(() {}, 'Menu'),
+          ActionMenuWidget(
+              functionPress: () {
+                Navigator.of(context).pushNamed('/modifier');
+              },
+              text: 'Modificadores'),
+          ActionMenuWidget(functionPress: () {}, text: 'Menu'),
         ],
-      ),
-    );
-  }
-
-  Widget action(functionPress, String text) {
-    return Container(
-      child: ElevatedButton(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(text),
-          ],
-        ),
-        onPressed: functionPress,
-        style: ButtonStyle(
-          textStyle: MaterialStateProperty.all(
-            TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15)),
-        ),
       ),
     );
   }

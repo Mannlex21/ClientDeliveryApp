@@ -28,54 +28,56 @@ class _ModifierScreenState extends State<ModifierScreen> {
           });
         }
       },
-      child:
-          BlocBuilder<ModifierBloc, ModifierState>(builder: (context, state) {
-        return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: const Color(0xff03dac6),
-            foregroundColor: Colors.black,
-            onPressed: () {
-              Navigator.of(context).pushNamed('/add_modifier');
-            },
-            child: Icon(Icons.add),
-          ),
-          body: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  leading: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.black,
+      child: BlocBuilder<ModifierBloc, ModifierState>(
+        builder: (context, state) {
+          return Scaffold(
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: const Color(0xff03dac6),
+              foregroundColor: Colors.black,
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed('/form_modifier', arguments: null);
+              },
+              child: Icon(Icons.add),
+            ),
+            body: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    leading: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
+                    bottom: PreferredSize(
+                      preferredSize: const Size.fromHeight(0),
+                      child: Container(),
+                    ),
+                    expandedHeight: 71,
+                    pinned: true,
+                    collapsedHeight: 71,
+                    toolbarHeight: 70,
+                    elevation: 1,
+                    backgroundColor: Colors.white,
                   ),
-                  bottom: PreferredSize(
-                    preferredSize: const Size.fromHeight(0),
-                    child: Container(),
-                  ),
-                  expandedHeight: 71,
-                  pinned: true,
-                  collapsedHeight: 71,
-                  toolbarHeight: 70,
-                  elevation: 1,
-                  backgroundColor: Colors.white,
+                ];
+              },
+              body: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: Container(
+                  child: ListModifierWidget(listModifier: listModifier),
                 ),
-              ];
-            },
-            body: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: Container(
-                child: ListModifierWidget(listModifier: listModifier),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:client_delivery_app/src/components/modifier/item_modifier_widget.dart';
 import 'package:client_delivery_app/src/model/modifier.dart';
 import 'package:flutter/material.dart';
 
@@ -15,9 +16,7 @@ class _ListModifierWidgetState extends State<ListModifierWidget> {
     return ListView.builder(
       itemCount: widget.listModifier.length,
       itemBuilder: (context, index) {
-        return ListTile(
-          title: Text('${widget.listModifier[index].title} ${widget.listModifier[index].list[0].price}'),
-        );
+        return ItemModifierWidget(modifier: widget.listModifier[index]);
       },
     );
   }

@@ -3,20 +3,19 @@ import 'package:client_delivery_app/src/bloc/modifier/modifier_event.dart';
 import 'package:client_delivery_app/src/bloc/modifier/modifier_state.dart';
 import 'package:client_delivery_app/src/model/itemModifier.dart';
 import 'package:client_delivery_app/src/model/modifier.dart';
-import 'package:client_delivery_app/src/repository/modifier_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddModifierScreen extends StatefulWidget {
   final BuildContext context;
-  AddModifierScreen(this.context, {Key key}) : super(key: key);
+  final Modifier modifier;
+  AddModifierScreen(this.context, {Key key, this.modifier}) : super(key: key);
 
   @override
   _AddModifierScreenState createState() => _AddModifierScreenState();
 }
 
 class _AddModifierScreenState extends State<AddModifierScreen> {
-  final ModifierRepository _modifierRepository = ModifierRepository();
   List<ItemModifier> modifierList = [];
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -311,5 +310,8 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
   void initState() {
     super.initState();
     _modifierBloc = BlocProvider.of<ModifierBloc>(context);
+    modifierList = widget.modifier != null ? widget.modifier.list : [];
+    _titleController.text =
+        widget.modifier != null ? widget.modifier.title : '';
   }
 }
