@@ -1,19 +1,17 @@
-import 'package:client_delivery_app/src/bloc/modifier/modifier_event.dart';
+import 'package:client_delivery_app/src/bloc/menu/menu_event.dart_event.dart';
 import 'package:client_delivery_app/src/model/itemModifier.dart';
-import 'package:client_delivery_app/src/model/modifier.dart';
+import 'package:client_delivery_app/src/model/menu.dart';
 import 'package:client_delivery_app/src/model/response.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class ModifierRepository {
+class MenuRepository {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<Response> add(AddModifier event) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    CollectionReference modifiersRef = firestore.collection('companies');
-
+  Future<Response> add(AddMenu event) async {
+    CollectionReference modifiersRef = firestore.collection('modifiers');
     try {
-      await modifiersRef.doc('${auth.currentUser.uid}').collection('modifier').add(event.modifier.toMap());
+      await modifiersRef.add(event.menu.toMap());
       return new Response(true, '', 'success', null);
     } on FirebaseAuthException catch (error) {
       return new Response(false, '${error.code}:', '${error.message}', null);
@@ -22,10 +20,8 @@ class ModifierRepository {
     }
   }
 
-  Future<List<Modifier>> list() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-
-    return await firestore.collection("companies").doc('${auth.currentUser.uid}').collection('modifier').get().then((querySnapshot) {
+  Future<List<Menu>> list() async {
+    return await firestore.collection("modifiers").get().then((querySnapshot) {
       return querySnapshot.docs.map((doc) {
         List<ItemModifier> marks = [];
         List<dynamic> markMap = doc.data()['list'];
@@ -33,7 +29,7 @@ class ModifierRepository {
           marks.add(new ItemModifier(element['name'], double.parse(element['price'].toString()), null));
         });
 
-        return Modifier(
+        return Menu(
           doc.data()['title'] ?? '',
           marks,
           doc.id,

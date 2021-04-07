@@ -59,9 +59,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         }
 
         if (state is RegistrationSuccess) {
-          // Future.delayed(Duration.zero, () {
-          //   Navigator.of(context).pushReplacementNamed('/home');
-          // });
+          Future.delayed(Duration.zero, () {
+            Navigator.of(context).pushReplacementNamed('/login');
+          });
         }
       },
       child: Scaffold(

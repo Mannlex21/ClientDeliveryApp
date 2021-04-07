@@ -8,11 +8,18 @@ class LoginRepository {
 
   Future<Response> authentication(Authentication event) async {
     try {
-      final currentUser = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: event.email,
-        password: event.password,
-      );
-      return new Response(true, '', 'success', currentUser);
+      final currentUser = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: event.email,
+            password: event.password,
+          )
+          .timeout(Duration(seconds: 30));
+
+      if (currentUser.user != null) {
+        return new Response(true, '', 'success', currentUser);
+      } else {
+        return new Response(false, '', 'error', null);
+      }
     } on FirebaseAuthException catch (error) {
       return new Response(false, '${error.code}:', '${error.message}', null);
     } catch (error) {

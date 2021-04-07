@@ -6,16 +6,16 @@ import 'package:client_delivery_app/src/model/modifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddModifierScreen extends StatefulWidget {
+class FormModifierScreen extends StatefulWidget {
   final BuildContext context;
   final Modifier modifier;
-  AddModifierScreen(this.context, {Key key, this.modifier}) : super(key: key);
+  FormModifierScreen(this.context, {Key key, this.modifier}) : super(key: key);
 
   @override
-  _AddModifierScreenState createState() => _AddModifierScreenState();
+  _FormModifierScreenState createState() => _FormModifierScreenState();
 }
 
-class _AddModifierScreenState extends State<AddModifierScreen> {
+class _FormModifierScreenState extends State<FormModifierScreen> {
   List<ItemModifier> modifierList = [];
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -36,11 +36,10 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
     return BlocListener<ModifierBloc, ModifierState>(
       listener: (context, state) {
         if (state is ModifierSuccess) {
-          Navigator.of(context).pop(false);
+          Navigator.of(context).pushReplacementNamed('/modifier');
         }
       },
-      child:
-          BlocBuilder<ModifierBloc, ModifierState>(builder: (context, state) {
+      child: BlocBuilder<ModifierBloc, ModifierState>(builder: (context, state) {
         return Scaffold(
           bottomNavigationBar: Container(
             height: 70,
@@ -48,14 +47,11 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(Theme.of(context).primaryColor),
-                  padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
+                  backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
+                  padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
                 ),
                 onPressed: () {
-                  _modifierBloc.add(AddModifier(
-                      Modifier(_titleController.text, modifierList, null)));
+                  _modifierBloc.add(AddModifier(Modifier(_titleController.text, modifierList, null)));
                 },
                 child: Center(
                   child: Text('Guardar modificador'),
@@ -64,8 +60,7 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
             ),
           ),
           body: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
                   leading: IconButton(
@@ -96,8 +91,7 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
               child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(
-                      right: 20, left: 20, bottom: 10, top: 0),
+                  padding: const EdgeInsets.only(right: 20, left: 20, bottom: 10, top: 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -128,8 +122,7 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
                         },
                       ),
                       CheckboxListTile(
-                        title: Text(
-                            "Se requiere que los clientes elijan modificadores"),
+                        title: Text("Se requiere que los clientes elijan modificadores"),
                         value: isOptional,
                         onChanged: (newValue) {
                           setState(() {
@@ -139,8 +132,7 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
                         controlAffinity: ListTileControlAffinity.leading,
                       ),
                       CheckboxListTile(
-                        title: Text(
-                            "Establecer número total de modificadores que los clientes pueden elegir"),
+                        title: Text("Establecer número total de modificadores que los clientes pueden elegir"),
                         value: isOptional,
                         onChanged: (newValue) {
                           setState(() {
@@ -150,24 +142,19 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
                         controlAffinity: ListTileControlAffinity.leading,
                       ),
                       CheckboxListTile(
-                        title: Text(
-                            "Establecer número total de modificadores que los clientes pueden elegir"),
+                        title: Text("Establecer número total de modificadores que los clientes pueden elegir"),
                         value: isOptional,
                         onChanged: (newValue) {
                           setState(() {
                             isOptional = newValue;
                           });
                         },
-                        controlAffinity: ListTileControlAffinity
-                            .leading, //  <-- leading Checkbox
+                        controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
                       ),
-                      ElevatedButton(
-                          onPressed: () => openDialog(context),
-                          child: Text("Agregar modificador")),
+                      ElevatedButton(onPressed: () => openDialog(context), child: Text("Agregar modificador")),
                       Column(
                         children: [
-                          for (ItemModifier item in modifierList)
-                            itemModifier(context, item),
+                          for (ItemModifier item in modifierList) itemModifier(context, item),
                         ],
                       )
                     ],
@@ -278,10 +265,7 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
               child: Text("Agregar"),
               onPressed: () {
                 if (_formDialogKey.currentState.validate()) {
-                  Navigator.pop(context, {
-                    'name': _nameController.text,
-                    'price': _priceController.text
-                  });
+                  Navigator.pop(context, {'name': _nameController.text, 'price': _priceController.text});
                 }
               },
             ),
@@ -291,8 +275,7 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
       barrierDismissible: false,
     ).then((value) {
       if (value != null) {
-        modifierList.add(
-            ItemModifier(value['name'], double.parse(value['price']), null));
+        modifierList.add(ItemModifier(value['name'], double.parse(value['price']), null));
       }
     });
   }
@@ -311,7 +294,6 @@ class _AddModifierScreenState extends State<AddModifierScreen> {
     super.initState();
     _modifierBloc = BlocProvider.of<ModifierBloc>(context);
     modifierList = widget.modifier != null ? widget.modifier.list : [];
-    _titleController.text =
-        widget.modifier != null ? widget.modifier.title : '';
+    _titleController.text = widget.modifier != null ? widget.modifier.title : '';
   }
 }

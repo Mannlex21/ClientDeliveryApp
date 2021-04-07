@@ -1,42 +1,32 @@
-import 'package:client_delivery_app/src/bloc/modifier/modifier_bloc.dart';
-import 'package:client_delivery_app/src/bloc/modifier/modifier_event.dart';
-import 'package:client_delivery_app/src/bloc/modifier/modifier_state.dart';
-import 'package:client_delivery_app/src/components/modifier/list_modifier_widget.dart';
-import 'package:client_delivery_app/src/model/modifier.dart';
+import 'package:client_delivery_app/src/bloc/menu/menu_bloc.dart_bloc.dart';
+import 'package:client_delivery_app/src/bloc/menu/menu_state.dart';
 import 'package:client_delivery_app/src/screen/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ModifierScreen extends StatefulWidget {
+class MenuScreen extends StatefulWidget {
   final BuildContext context;
-  ModifierScreen(this.context, {Key key}) : super(key: key);
+  MenuScreen(this.context, {Key key}) : super(key: key);
 
   @override
-  _ModifierScreenState createState() => _ModifierScreenState();
+  _MenuScreenState createState() => _MenuScreenState();
 }
 
-class _ModifierScreenState extends State<ModifierScreen> {
-  ModifierBloc _modifierBloc;
-  List<Modifier> listModifier = [];
-
+class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ModifierBloc, ModifierState>(
+    return BlocListener<MenuBloc, MenuState>(
       listener: (context, state) {
-        if (state is ListModifierSuccess) {
-          setState(() {
-            listModifier = state.listModifier;
-          });
-        }
+        if (state is ListMenuSuccess) {}
       },
-      child: BlocBuilder<ModifierBloc, ModifierState>(
+      child: BlocBuilder<MenuBloc, MenuState>(
         builder: (context, state) {
           return Scaffold(
             floatingActionButton: FloatingActionButton(
               backgroundColor: const Color(0xff03dac6),
               foregroundColor: Colors.black,
               onPressed: () {
-                Navigator.of(context).pushNamed('/form_modifier', arguments: null);
+                Navigator.of(context).pushNamed('/form_menu', arguments: null);
               },
               child: Icon(Icons.add),
             ),
@@ -74,7 +64,7 @@ class _ModifierScreenState extends State<ModifierScreen> {
                 context: context,
                 removeTop: true,
                 child: Container(
-                  child: ListModifierWidget(listModifier: listModifier),
+                  child: null,
                 ),
               ),
             ),
@@ -82,17 +72,5 @@ class _ModifierScreenState extends State<ModifierScreen> {
         },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _modifierBloc.close();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _modifierBloc = BlocProvider.of<ModifierBloc>(context);
   }
 }

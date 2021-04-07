@@ -17,40 +17,8 @@ class _HomeWidgetState extends State<HomeWidget> {
           return [
             SliverAppBar(
               title: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Expanded(
-                    flex: 6,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).pushNamed('/search');
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: const Color(0xFFF6F6F6),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Icon(Icons.search),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                child: Text(
-                                  "Buscar",
-                                  style: TextStyle(fontSize: 22),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,14 +29,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           icon: Icon(Icons.notifications),
                           onPressed: () {},
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: IconButton(
-                          icon: Icon(Icons.shopping_bag),
-                          onPressed: () {},
-                        ),
-                      ),
+                      )
                     ],
                   )
                 ],
@@ -89,11 +50,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         body: MediaQuery.removePadding(
           context: context,
           removeTop: true,
-          child: ListView(
-            children: [
-              actions(),
-            ],
-          ),
+          child: actions(),
         ),
       ),
     );
@@ -104,13 +61,26 @@ class _HomeWidgetState extends State<HomeWidget> {
       color: Colors.white,
       height: 119,
       child: ListView(
+        shrinkWrap: true,
         children: [
           ActionMenuWidget(
-              functionPress: () {
-                Navigator.of(context).pushNamed('/modifier');
-              },
-              text: 'Modificadores'),
-          ActionMenuWidget(functionPress: () {}, text: 'Menu'),
+            functionPress: () {
+              Navigator.of(context).pushNamed('/modifier');
+            },
+            text: 'Modificadores',
+          ),
+          ActionMenuWidget(
+            functionPress: () {
+              Navigator.of(context).pushNamed('/menu');
+            },
+            text: 'Menu',
+          ),
+          ActionMenuWidget(
+            functionPress: () {
+              Navigator.of(context).pushNamed('/items');
+            },
+            text: 'Articulos',
+          ),
         ],
       ),
     );

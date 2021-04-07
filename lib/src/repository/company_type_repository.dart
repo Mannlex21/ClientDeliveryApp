@@ -5,7 +5,7 @@ class CompanyTypeRepository {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Stream<List<CompanyType>> getList() {
-    return firestore.collection('companyType').snapshots().map((snapshot) {
+    return firestore.collection('settings').doc('companyType').collection('list').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => CompanyType.fromSnapshot(doc)).toList();
     });
   }

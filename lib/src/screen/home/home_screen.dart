@@ -24,7 +24,6 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   Widget build(BuildContext context) {
     List _widgetOptions = [
       HomeWidget(),
-      // SearchScreen(context, false),
       Text(
         'Index 2: School',
       ),
