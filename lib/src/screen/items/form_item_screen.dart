@@ -1,8 +1,7 @@
 import 'package:client_delivery_app/src/bloc/item/item_bloc.dart';
+import 'package:client_delivery_app/src/bloc/item/item_event.dart';
 import 'package:client_delivery_app/src/bloc/item/item_state.dart';
-import 'package:client_delivery_app/src/bloc/modifier/modifier_bloc.dart';
-import 'package:client_delivery_app/src/bloc/modifier/modifier_state.dart';
-import 'package:client_delivery_app/src/model/itemModifier.dart';
+import 'package:client_delivery_app/src/model/item.dart';
 import 'package:client_delivery_app/src/model/modifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,20 +16,37 @@ class FormItemScreen extends StatefulWidget {
 }
 
 class _FormItemScreenState extends State<FormItemScreen> {
-  List<ItemModifier> modifierList = [];
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final _titleController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
+  TextEditingController _menuController = TextEditingController();
+  TextEditingController _categoryController = TextEditingController();
+  TextEditingController _usedInController = TextEditingController();
+  TextEditingController _containController = TextEditingController();
+  TextEditingController _lastUpdateController = TextEditingController();
 
-  String title = "";
-  String name = '';
-  String price = '';
-  bool isOptional = false;
+  String name;
+  double price;
+  List<String> menu;
+  List<String> category;
+  List<String> usedIn;
+  List<String> contain;
+  DateTime lastUpdate;
+  bool isOutOfStock = false;
+  bool isSellingItself = true;
 
   FocusNode titleFocus;
-  ModifierBloc _modifierBloc;
+  FocusNode priceFocus;
+  FocusNode menuFocus;
+  FocusNode categoryFocus;
+  FocusNode usedInFocus;
+  FocusNode containFocus;
+  FocusNode lastUpdateFocus;
+  FocusNode isOutOfStockFocus;
+  FocusNode isSellingItselfFocus;
+
+  ItemBloc _itemBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +67,20 @@ class _FormItemScreenState extends State<FormItemScreen> {
                   backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                   padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _itemBloc.add(AddItem(Item(
+                      _nameController.text,
+                      double.parse(_priceController.text),
+                      [_menuController.text],
+                      [_categoryController.text],
+                      [_usedInController.text],
+                      [_containController.text],
+                      DateTime.now(),
+                      isOutOfStock,
+                      isSellingItself)));
+                },
                 child: Center(
-                  child: Text('Food'),
+                  child: Text('Guardar'),
                 ),
               ),
             ),
@@ -96,20 +123,20 @@ class _FormItemScreenState extends State<FormItemScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "Grupo de modificadores",
+                        "Articulo",
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       TextFormField(
-                        decoration: InputDecoration(labelText: "Title:"),
-                        controller: _titleController,
+                        decoration: InputDecoration(labelText: "Nombre:"),
+                        controller: _nameController,
                         focusNode: titleFocus,
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         onSaved: (value) {
-                          title = value;
+                          name = value;
                         },
                         validator: (value) {
                           if (value.isEmpty) {
@@ -119,14 +146,128 @@ class _FormItemScreenState extends State<FormItemScreen> {
                           return null;
                         },
                       ),
-                      ElevatedButton(
-                          onPressed: () => {}, //openDialog(context),
-                          child: Text("Agregar modificador")),
-                      Column(
-                        children: [
-                          for (ItemModifier item in modifierList) itemModifier(context, item),
-                        ],
-                      )
+                      TextFormField(
+                        decoration: InputDecoration(labelText: "Precio:"),
+                        controller: _priceController,
+                        focusNode: priceFocus,
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        onSaved: (value) {
+                          price = double.parse(value);
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Este campo es obligatorio";
+                          }
+
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: "Menu:"),
+                        controller: _menuController,
+                        focusNode: menuFocus,
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        onSaved: (value) {
+                          menu = [value];
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Este campo es obligatorio";
+                          }
+
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: "Categoria:"),
+                        controller: _categoryController,
+                        focusNode: categoryFocus,
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        onSaved: (value) {
+                          category = [value];
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Este campo es obligatorio";
+                          }
+
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: "Usado en:"),
+                        controller: _usedInController,
+                        focusNode: usedInFocus,
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        onSaved: (value) {
+                          usedIn = [value];
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Este campo es obligatorio";
+                          }
+
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: "Contiene:"),
+                        controller: _containController,
+                        focusNode: containFocus,
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        onSaved: (value) {
+                          contain = [value];
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Este campo es obligatorio";
+                          }
+
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: "Ultima actualización:"),
+                        controller: _lastUpdateController,
+                        focusNode: lastUpdateFocus,
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        onSaved: (value) {
+                          lastUpdate = DateTime.now();
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Este campo es obligatorio";
+                          }
+
+                          return null;
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: Text("¿Esta fuera de Stock?"),
+                        value: isOutOfStock,
+                        onChanged: (newValue) {
+                          setState(() {
+                            isOutOfStock = newValue;
+                          });
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
+                      ),
+                      CheckboxListTile(
+                        title: Text("¿Se vende individualmente?"),
+                        value: isSellingItself,
+                        onChanged: (newValue) {
+                          setState(() {
+                            isSellingItself = newValue;
+                          });
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
+                      ),
                     ],
                   ),
                 ),
@@ -138,31 +279,18 @@ class _FormItemScreenState extends State<FormItemScreen> {
     );
   }
 
-  Widget itemModifier(BuildContext context, ItemModifier item) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              item.name,
-              style: TextStyle(fontSize: 18),
-            ),
-            Container(
-              child: Row(
-                children: [
-                  Text(
-                    item.price.toString(),
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Icon(Icons.more_vert)
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+  @override
+  void dispose() {
+    super.dispose();
+    this._nameController.dispose();
+    this._priceController.dispose();
+
+    _itemBloc.close();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _itemBloc = BlocProvider.of<ItemBloc>(context);
   }
 }

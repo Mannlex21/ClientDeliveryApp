@@ -32,6 +32,7 @@ class RegistrationRepository {
           'name': event.name,
           'lastName': event.lastName,
           'phoneNumber': event.phoneNumber,
+          'type': 'Store'
         });
       });
 

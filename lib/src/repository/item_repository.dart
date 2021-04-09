@@ -28,16 +28,19 @@ class ItemRepository {
 
     return await firestore.collection("companies").doc('${auth.currentUser.uid}').collection('items').get().then((querySnapshot) {
       return querySnapshot.docs.map((doc) {
-        List<ItemModifier> marks = [];
-        List<dynamic> markMap = doc.data()['list'];
-        markMap.forEach((element) {
-          marks.add(new ItemModifier(element['name'], double.parse(element['price'].toString()), null));
-        });
-
+        var date = DateTime.parse(doc.data()['lastUpdate'].toDate().toString());
+        print(doc.data()['lastUpdate']);
+        print(date);
         return Item(
-          doc.data()['title'] ?? '',
-          marks,
-          doc.id,
+          doc.data()['name'] ?? '',
+          doc.data()['price'] ?? 0.0,
+          new List<String>.from(doc.data()['menus']) ?? [],
+          new List<String>.from(doc.data()['categories']) ?? [],
+          new List<String>.from(doc.data()['usedIn']) ?? [],
+          new List<String>.from(doc.data()['contains']) ?? [],
+          DateTime.parse(doc.data()['lastUpdate'].toDate().toString()) ?? DateTime.now(),
+          doc.data()['isOutOfStock'] ?? false,
+          doc.data()['isSellingItself'] ?? false,
         );
       }).toList();
     });

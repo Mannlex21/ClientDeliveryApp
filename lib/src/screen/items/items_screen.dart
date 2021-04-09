@@ -1,5 +1,7 @@
 import 'package:client_delivery_app/src/bloc/item/item_bloc.dart';
 import 'package:client_delivery_app/src/bloc/item/item_state.dart';
+import 'package:client_delivery_app/src/components/item/list_item_widget.dart';
+import 'package:client_delivery_app/src/model/item.dart';
 import 'package:client_delivery_app/src/screen/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,11 +15,18 @@ class ItemsScreen extends StatefulWidget {
 }
 
 class _ItemsScreenState extends State<ItemsScreen> {
+  ItemBloc _itemBloc;
+  List<Item> listItem = [];
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<ItemBloc, ItemState>(
       listener: (context, state) {
-        if (state is ListItemSuccess) {}
+        if (state is ListItemSuccess) {
+          setState(() {
+            listItem = state.listItem;
+          });
+        }
       },
       child: BlocBuilder<ItemBloc, ItemState>(
         builder: (context, state) {
@@ -64,7 +73,7 @@ class _ItemsScreenState extends State<ItemsScreen> {
                 context: context,
                 removeTop: true,
                 child: Container(
-                  child: null,
+                  child: ListItemWidget(listItem: listItem),
                 ),
               ),
             ),
@@ -72,5 +81,17 @@ class _ItemsScreenState extends State<ItemsScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _itemBloc.close();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _itemBloc = BlocProvider.of<ItemBloc>(context);
   }
 }
