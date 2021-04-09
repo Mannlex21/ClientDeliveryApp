@@ -1,5 +1,4 @@
 import 'package:client_delivery_app/src/components/item/item_widget.dart';
-import 'package:client_delivery_app/src/components/modifier/item_modifier_widget.dart';
 import 'package:client_delivery_app/src/model/item.dart';
 import 'package:flutter/material.dart';
 

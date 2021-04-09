@@ -36,7 +36,7 @@ class _FormItemScreenState extends State<FormItemScreen> {
   bool isOutOfStock = false;
   bool isSellingItself = true;
 
-  FocusNode titleFocus;
+  FocusNode nameFocus;
   FocusNode priceFocus;
   FocusNode menuFocus;
   FocusNode categoryFocus;
@@ -45,6 +45,7 @@ class _FormItemScreenState extends State<FormItemScreen> {
   FocusNode lastUpdateFocus;
   FocusNode isOutOfStockFocus;
   FocusNode isSellingItselfFocus;
+  FocusNode submitFocus;
 
   ItemBloc _itemBloc;
 
@@ -64,9 +65,12 @@ class _FormItemScreenState extends State<FormItemScreen> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                  padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
+                  backgroundColor:
+                      MaterialStateProperty.all(Theme.of(context).primaryColor),
+                  padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
                 ),
+                focusNode: submitFocus,
                 onPressed: () {
                   _itemBloc.add(AddItem(Item(
                       _nameController.text,
@@ -86,7 +90,8 @@ class _FormItemScreenState extends State<FormItemScreen> {
             ),
           ),
           body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
                   leading: IconButton(
@@ -117,7 +122,8 @@ class _FormItemScreenState extends State<FormItemScreen> {
               child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(right: 20, left: 20, bottom: 10, top: 0),
+                  padding: const EdgeInsets.only(
+                      right: 20, left: 20, bottom: 10, top: 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,7 +138,9 @@ class _FormItemScreenState extends State<FormItemScreen> {
                       TextFormField(
                         decoration: InputDecoration(labelText: "Nombre:"),
                         controller: _nameController,
-                        focusNode: titleFocus,
+                        focusNode: nameFocus,
+                        onEditingComplete: () =>
+                            requestFocus(context, priceFocus),
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         onSaved: (value) {
@@ -150,7 +158,9 @@ class _FormItemScreenState extends State<FormItemScreen> {
                         decoration: InputDecoration(labelText: "Precio:"),
                         controller: _priceController,
                         focusNode: priceFocus,
-                        keyboardType: TextInputType.name,
+                        onEditingComplete: () =>
+                            requestFocus(context, menuFocus),
+                        keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         onSaved: (value) {
                           price = double.parse(value);
@@ -167,6 +177,8 @@ class _FormItemScreenState extends State<FormItemScreen> {
                         decoration: InputDecoration(labelText: "Menu:"),
                         controller: _menuController,
                         focusNode: menuFocus,
+                        onEditingComplete: () =>
+                            requestFocus(context, categoryFocus),
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         onSaved: (value) {
@@ -184,6 +196,8 @@ class _FormItemScreenState extends State<FormItemScreen> {
                         decoration: InputDecoration(labelText: "Categoria:"),
                         controller: _categoryController,
                         focusNode: categoryFocus,
+                        onEditingComplete: () =>
+                            requestFocus(context, usedInFocus),
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         onSaved: (value) {
@@ -201,6 +215,8 @@ class _FormItemScreenState extends State<FormItemScreen> {
                         decoration: InputDecoration(labelText: "Usado en:"),
                         controller: _usedInController,
                         focusNode: usedInFocus,
+                        onEditingComplete: () =>
+                            requestFocus(context, containFocus),
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         onSaved: (value) {
@@ -218,6 +234,8 @@ class _FormItemScreenState extends State<FormItemScreen> {
                         decoration: InputDecoration(labelText: "Contiene:"),
                         controller: _containController,
                         focusNode: containFocus,
+                        onEditingComplete: () =>
+                            requestFocus(context, lastUpdateFocus),
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         onSaved: (value) {
@@ -232,8 +250,11 @@ class _FormItemScreenState extends State<FormItemScreen> {
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(labelText: "Ultima actualización:"),
+                        decoration:
+                            InputDecoration(labelText: "Ultima actualización:"),
                         controller: _lastUpdateController,
+                        onEditingComplete: () =>
+                            requestFocus(context, submitFocus),
                         focusNode: lastUpdateFocus,
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
@@ -284,6 +305,22 @@ class _FormItemScreenState extends State<FormItemScreen> {
     super.dispose();
     this._nameController.dispose();
     this._priceController.dispose();
+    this._menuController.dispose();
+    this._categoryController.dispose();
+    this._usedInController.dispose();
+    this._containController.dispose();
+    this._lastUpdateController = TextEditingController();
+
+    this.submitFocus.dispose();
+    this.menuFocus.dispose();
+    this.priceFocus.dispose();
+    this.menuFocus.dispose();
+    this.containFocus.dispose();
+    this.usedInFocus.dispose();
+    this.categoryFocus.dispose();
+    this.lastUpdateFocus.dispose();
+    this.isOutOfStockFocus.dispose();
+    this.isSellingItselfFocus.dispose();
 
     _itemBloc.close();
   }
@@ -291,6 +328,21 @@ class _FormItemScreenState extends State<FormItemScreen> {
   @override
   void initState() {
     super.initState();
+    this.nameFocus = FocusNode();
+    this.priceFocus = FocusNode();
+    this.submitFocus = FocusNode();
+    this.menuFocus = FocusNode();
+    this.containFocus = FocusNode();
+    this.usedInFocus = FocusNode();
+    this.categoryFocus = FocusNode();
+    this.lastUpdateFocus = FocusNode();
+    this.isOutOfStockFocus = FocusNode();
+    this.isSellingItselfFocus = FocusNode();
+
     _itemBloc = BlocProvider.of<ItemBloc>(context);
+  }
+
+  void requestFocus(BuildContext context, FocusNode focusNode) {
+    FocusScope.of(context).requestFocus(focusNode);
   }
 }

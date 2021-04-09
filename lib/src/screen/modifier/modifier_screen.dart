@@ -1,5 +1,4 @@
 import 'package:client_delivery_app/src/bloc/modifier/modifier_bloc.dart';
-import 'package:client_delivery_app/src/bloc/modifier/modifier_event.dart';
 import 'package:client_delivery_app/src/bloc/modifier/modifier_state.dart';
 import 'package:client_delivery_app/src/components/modifier/list_modifier_widget.dart';
 import 'package:client_delivery_app/src/model/modifier.dart';
@@ -36,12 +35,14 @@ class _ModifierScreenState extends State<ModifierScreen> {
               backgroundColor: const Color(0xff03dac6),
               foregroundColor: Colors.black,
               onPressed: () {
-                Navigator.of(context).pushNamed('/form_modifier', arguments: null);
+                Navigator.of(context)
+                    .pushNamed('/form_modifier', arguments: null);
               },
               child: Icon(Icons.add),
             ),
             body: NestedScrollView(
-              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
                     leading: IconButton(
@@ -52,7 +53,9 @@ class _ModifierScreenState extends State<ModifierScreen> {
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(
                           context,
-                          new MaterialPageRoute(builder: (BuildContext context) => MyHomeScreen()),
+                          new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  MyHomeScreen()),
                           (Route<dynamic> route) => false,
                         );
                       },

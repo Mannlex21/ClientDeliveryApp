@@ -1,5 +1,4 @@
 import 'package:client_delivery_app/src/model/item.dart';
-import 'package:client_delivery_app/src/model/modifier.dart';
 import 'package:flutter/material.dart';
 
 enum Commands { assign, edit }
@@ -31,7 +30,8 @@ class _ItemWidgetState extends State<ItemWidget> {
                   case Commands.assign:
                     break;
                   case Commands.edit:
-                    Navigator.of(context).pushNamed('/form_modifier', arguments: widget.item);
+                    Navigator.of(context)
+                        .pushNamed('/form_modifier', arguments: widget.item);
                     break;
                 }
               },
